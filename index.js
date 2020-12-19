@@ -43,3 +43,37 @@ async function publishNews(news) {
   await fetchHtml(publish_api_link);
   console.log(`published news: ${news.link}`);
 }
+
+
+
+  /* Excutions starts here */
+
+
+let latest_news = {
+  headline: "",
+  description: "",
+  cover: "",
+  link: "",
+  datetime: new Date("2020-12-18T06:55:16.888Z"),
+};
+let last_news_date = new Date("2020-12-18T06:55:16.888Z");
+
+async function latestNews(news_list) {
+  for (let news of news_list) {
+    if ( (news.datetime > last_news_date)){
+      last_news_date = news.datetime;
+      return news;
+    } 
+  }
+  return null;
+}
+
+async function looper() {
+  let news_list = await fetchNews();
+  latest_news = await latestNews(news_list);
+  if (latest_news) {
+    await publishNews(latest_news);
+  }
+}
+
+setInterval(looper, 1000*60*5); // Every 5 minutes
