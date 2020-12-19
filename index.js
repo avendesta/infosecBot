@@ -5,10 +5,8 @@ const fetchHtml = async (url) => {
   try {
     const { data } = await axios.get(url);
     return data;
-  } catch {
-    console.error(
-      `ERROR: An error occurred while trying to fetch the URL: ${url}`
-    );
+  } catch(e) {
+    console.error(e);
   }
 };
 
@@ -35,15 +33,31 @@ async function fetchNews() {
   });
 }
 
+async function fetchContent(link){
+  const html = await fetchHtml(link);
+  const $ = cheerio.load(html);
+  return $("#layout-").text()
+}
+
 
 async function publishNews(news) {
   const BOT_ID = process.env.BOT_ID;
   const CHANNEL_ID = process.env.CHANNEL_ID;
-  let publish_api_link = `https://api.telegram.org/bot${BOT_ID}/sendMessage?chat_id=${CHANNEL_ID}&text=${news.link}&disable_web_page_preview=False`;
-  await fetchHtml(publish_api_link);
-  console.log(`published news: ${news.link}`);
-}
+  let content = await fetchContent(news.link);
 
+  content = content.substring(0,3500);
+  content = content.replace(/(?:^[\s\u00a0]+)|(?:[\s\u00a0]+$)/g, ' '); // remove &nbsp
+  content = content.replace(/&nbsp;/g, '');
+  content = content.replace(/\n\s*\n/g, '\n\n'); // replace multiple newlines with double newlines
+  content = content.replace(/[^\x00-\x7F]/g, ""); // remove non ascii characters
+  console.log(content);
+
+  content = `${news.link}\n\n`+`*${news.headline}*\n`+`_${news.description}_\n\n`+content;
+  content = encodeURIComponent(content);
+
+  let publish_api_link = `https://api.telegram.org/bot${BOT_ID}/sendMessage?chat_id=${CHANNEL_ID}&text=${content}&parse_mode=Markdown&disable_web_page_preview=False`;
+  await fetchHtml(publish_api_link);
+}
 
 
   /* Excutions starts here */
@@ -74,6 +88,7 @@ async function looper() {
   if (latest_news) {
     await publishNews(latest_news);
   }
+  console.log(1);
 }
 
-setInterval(looper, 1000*60*5); // Every 5 minutes
+setInterval(looper, 1000*10); // Every 5 minutes
