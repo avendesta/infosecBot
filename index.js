@@ -50,7 +50,7 @@ async function publishNews(news) {
   content = content.replace(/&nbsp;/g, '');
   content = content.replace(/\n\s*\n/g, '\n\n'); // replace multiple newlines with double newlines
   content = content.replace(/[^\x00-\x7F]/g, ""); // remove non ascii characters
-  console.log(content);
+  // console.log(content);
 
   content = `${news.link}\n\n`+`*${news.headline}*\n`+`_${news.description}_\n\n`+content;
   content = encodeURIComponent(content);
@@ -88,7 +88,6 @@ async function looper() {
   if (latest_news) {
     await publishNews(latest_news);
   }
-  console.log(1);
 }
 
-setInterval(looper, 1000*10); // Every 5 minutes
+setInterval(looper, 1000*10); // Every 10 seconds
