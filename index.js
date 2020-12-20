@@ -96,9 +96,11 @@ async function latestNews(news_list) {
 async function looper() {
   await checkEnv();
   let news_list = await fetchNews();
+  console.log("✅:fetched\n");
   latest_news = await latestNews(news_list);
   if (latest_news) {
     await publishNews(latest_news);
+    console.log("✅:News Posted!\n");
   }
 }
 
