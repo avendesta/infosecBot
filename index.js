@@ -39,19 +39,20 @@ async function fetchContent(link){
   return $("#layout-").text()
 }
 
+// check the bot id from BotFather is set as environment varible: in linux export BOT_ID="xxxxx"
 async function checkEnv(){
-  if (process.env.BOT_ID && process.env.CHANNEL_ID) {
-    console.log("✅: BOT_ID and CHANNEL_ID found");
+  if (process.env.BOT_ID) {
+    console.log("✅: BOT_ID found");
   }
   else{
-    console.error("❌: You need to set BOT_ID and CHANNEL_ID to environment variables");
+    console.error("❌: You need to set BOT_ID to environment variables");
     process.exit();
   }
 }
 
 async function publishNews(news) {
   const BOT_ID = process.env.BOT_ID;
-  const CHANNEL_ID = process.env.CHANNEL_ID;
+  const CHANNEL_ID = "@infosecfeed"
   let content = await fetchContent(news.link);
 
   content = content.substring(0,3500);
@@ -101,4 +102,4 @@ async function looper() {
   }
 }
 
-setInterval(looper, 1000*60*1); // Every 1 minute
+setInterval(looper, 1000*60*10); // Every 10 minute
