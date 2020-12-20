@@ -39,6 +39,15 @@ async function fetchContent(link){
   return $("#layout-").text()
 }
 
+async function checkEnv(){
+  if (process.env.BOT_ID && process.env.CHANNEL_ID) {
+    console.log("✅: BOT_ID and CHANNEL_ID found");
+  }
+  else{
+    console.error("❌: You need to set BOT_ID and CHANNEL_ID to environment variables");
+    process.exit();
+  }
+}
 
 async function publishNews(news) {
   const BOT_ID = process.env.BOT_ID;
@@ -82,7 +91,9 @@ async function latestNews(news_list) {
   return null;
 }
 
+// This function fetches news, gets the latest ( not posted ) news, and post it
 async function looper() {
+  await checkEnv();
   let news_list = await fetchNews();
   latest_news = await latestNews(news_list);
   if (latest_news) {
@@ -90,4 +101,4 @@ async function looper() {
   }
 }
 
-setInterval(looper, 1000*10); // Every 10 seconds
+setInterval(looper, 1000*60*1); // Every 1 minute
