@@ -42,10 +42,10 @@ async function fetchContent(link){
 // check the bot id from BotFather is set as environment varible: in linux export BOT_ID="xxxxx"
 async function checkEnv(){
   if (process.env.BOT_ID) {
-    console.log("✅: BOT_ID found");
+    console.log("✅: BOT_ID found\n");
   }
   else{
-    console.error("❌: You need to set BOT_ID to environment variables");
+    console.error("❌: You need to set BOT_ID to environment variables\n");
     process.exit();
   }
 }
@@ -78,9 +78,9 @@ let latest_news = {
   description: "",
   cover: "",
   link: "",
-  datetime: new Date("2020-12-18T06:55:16.888Z"),
+  datetime: new Date(),
 };
-let last_news_date = new Date("2020-12-18T06:55:16.888Z");
+let last_news_date = new Date();
 
 async function latestNews(news_list) {
   for (let news of news_list) {
